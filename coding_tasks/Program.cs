@@ -1,54 +1,60 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace coding_tasks
+namespace geniusIdiotConsoleApp
 {
     public class Program
     {
         static void Main(string[] args)
         {
-            List<string> input = new List<string> { "a", "b", "c", "d", "e", "f", "r", "g", "b" };
-            int chunkSize = 2;
+            string[] questions = new string [5];
+            questions[0] = "Сколько будет два плюс два умноженное на два?";
+            questions[1] = "Бревно нужно распилить на 10 частей. Сколько распилов нужно сделать?";
+            questions[2] = "На двух руках 10 пальцев. Сколько пальцев на 5 руках?";
+            questions[3] = "Укол делают каждые полчаса. Сколько нужно минут, чтобы сделать три укола?";
+            questions[4] = "Пять свечей горело, две потухли. Сколько свечей осталось?";
 
-            List<List<string>> chunks = Chunked(input, chunkSize);
+            int[] answers = new int [5];
+            answers[0] = 6;
+            answers[1] = 9;
+            answers[2] = 25;
+            answers[3] = 60;
+            answers[4] = 2;
 
-            Console.Write("[");
-            for (int i = 0; i < chunks.Count; i++)
+            string[] diagnosis = new string [6];
+            diagnosis[0] = "Идиот";
+            diagnosis[1] = "Кретин";
+            diagnosis[2] = "Дурак";
+            diagnosis[3] = "Нормальный";
+            diagnosis[4] = "Талант";
+            diagnosis[5] = "Гений";
+
+            int counterRightAnswer = 0;
+
+            for (int i = 0; i < 5; i++)
             {
-                Console.Write("[");
-                Console.Write("'" + string.Join("', '", chunks[i]) + "'");
-                Console.Write("]");
-                if (i != chunks.Count - 1)
+                RandomQuestions(questions, answers);
+                Console.WriteLine($"Вопрос №{i + 1}\n{questions[i]}");
+
+                int user_answer = int.Parse(Console.ReadLine());
+                if (user_answer == answers[i])
                 {
-                    Console.Write(", ");
+                    counterRightAnswer++;   
                 }
             }
-            Console.WriteLine("]");
+
+            Console.WriteLine($"Количество верных ответов: {counterRightAnswer}");
+            Console.WriteLine($"Ваш диагноз - {diagnosis[counterRightAnswer]}");
         }
 
-        public static List<List<string>> Chunked(List <string> list, int n)
+        public static void RandomQuestions(string[] questions, int[] answers)
         {
-            List<List<string>> result = new List<List<string>>();
-            while (list.Count() > 0)
+            for (int i = questions.Length - 1; i > 0; i--)
             {
-                if (list.Count() >= n)
-                {
-                    List<string> chunk_add = new List<string>();
-                    for (int i = 0; i < n; i++)
-                    {
-                        chunk_add.Add(list[i]);
-                    }
-                    list.RemoveRange(0, n);
-                    result.Add(chunk_add);
-                }
-                else if (list.Count() < n && list.Count() > 0)
-                {
-                    result.Add(new List<string>(list));
-                    list.Clear();
-                }
+                int j = Random.Shared.Next(i + 1);
+
+                (questions[i], questions[j]) = (questions[j], questions[i]);
+                (answers[i], answers[j]) = (answers[j], answers[i]);
             }
-            return result;
         }
     }
 }
