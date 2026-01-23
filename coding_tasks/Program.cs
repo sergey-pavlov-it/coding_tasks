@@ -2,72 +2,87 @@
 {
     public class Program
     {
-        static void Main(string[] args)
+        public static (string, int)[] GetDataTest()
         {
-            int counterRightAnswer = 0;
-
-            string[] questions = GetArrayQuestions();
-            int[] answers = GetArrayAnswers();
-
-            RandomQuestions(questions, answers);
-
-            for (int i = 0; i < 5; i++)
+            (string Question, int Answer)[] TestData = new (string Question, int Answer)[5]
             {
-                Console.WriteLine($"Вопрос №{i + 1}\n{questions[i]}");
-
-                int user_answer = int.Parse(Console.ReadLine());
-                if (user_answer == answers[i])
-                {
-                    counterRightAnswer++;   
-                }
-            }
-
-            Console.WriteLine($"Количество верных ответов: {counterRightAnswer}");
-            Console.WriteLine($"Ваш диагноз - {Diagnosis(counterRightAnswer)}");
-        }
-
-        public static string[] GetArrayQuestions()
-        {
-            string[] questions = new string[5];
-            questions[0] = "Сколько будет два плюс два умноженное на два?";
-            questions[1] = "Бревно нужно распилить на 10 частей. Сколько распилов нужно сделать?";
-            questions[2] = "На двух руках 10 пальцев. Сколько пальцев на 5 руках?";
-            questions[3] = "Укол делают каждые полчаса. Сколько нужно минут, чтобы сделать три укола?";
-            questions[4] = "Пять свечей горело, две потухли. Сколько свечей осталось?";
-            return questions;
-        }
-
-        public static int[] GetArrayAnswers()
-        {
-            int[] answers = new int[5];
-            answers[0] = 6;
-            answers[1] = 9;
-            answers[2] = 25;
-            answers[3] = 60;
-            answers[4] = 2;
-            return answers;
+                ("Сколько будет два плюс два умноженное на два?", 6),
+                ("Бревно нужно распилить на 10 частей. Сколько распилов нужно сделать?", 9),
+                ("На двух руках 10 пальцев. Сколько пальцев на 5 руках?", 25),
+                ("Укол делают каждые полчаса. Сколько нужно минут, чтобы сделать три укола?", 60),
+                ("Пять свечей горело, две потухли. Сколько свечей осталось?", 2)
+            };
+            return TestData;
         }
 
         public static string Diagnosis(int counterRightAnswer)
         {
-            string[] diagnosis = new string[6];
-            diagnosis[0] = "идиот";
-            diagnosis[1] = "кретин";
-            diagnosis[2] = "дурак";
-            diagnosis[3] = "нормальный";
-            diagnosis[4] = "талант";
-            diagnosis[5] = "гений";
+            string[] diagnosis = new string[6]
+            {
+                "идиот",
+                "кретин",
+                "дурак",
+                "нормальный",
+                "талант",
+                "гений"
+            };
             return diagnosis[counterRightAnswer];
         }
 
-        public static void RandomQuestions(string[] questions, int[] answers)
+        static void Main(string[] args)
         {
-            for (int i = questions.Length - 1; i > 0; i--)
-            {
-                int j = Random.Shared.Next(i + 1);
+            Console.WriteLine("Здравствуйте! Как к Вам обращаться?");
+            string personName = Console.ReadLine();
+            Console.WriteLine($"Очень приятно, {personName}. Начнем тест:");
+            System.Threading.Thread.Sleep(1500);
 
-                (questions[i], questions[j]) = (questions[j], questions[i]);
-                (answers[i], answers[j]) = (answers[j], answers[i]);
+            bool doTest = true;
+
+            while (doTest)
+            {
+                int correctAnswer = 0;
+
+                (string Question, int Answer)[] dataTest = GetDataTest();
+
+                Random.Shared.Shuffle(dataTest);
+
+                for (int i = 0; i < 5; i++)
+                {
+                    Console.WriteLine($"Вопрос №{i + 1}\n{dataTest[i].Question}"); 
+
+                    int userAnswer = int.Parse(Console.ReadLine());
+                    if (userAnswer == dataTest[i].Answer)
+                    {
+                        correctAnswer++;
+                    }
+
+                    System.Threading.Thread.Sleep(500);
+                }
+
+                Console.WriteLine($"Количество верных ответов: {correctAnswer}");
+                Console.WriteLine($"{personName}, Ваш диагноз - {Diagnosis(correctAnswer)}");
+
+                Console.WriteLine("Хотите пройти тест ещё раз? (Да/Нет)");
+
+                string? newTest = null;
+                
+                while ( newTest != "да" && newTest != "нет")
+                {
+                    newTest = Console.ReadLine().ToLower();
+                    switch (newTest)
+                    {
+                        case "да":
+                            Console.WriteLine("Отлично, перейдем к вопросам");
+                            break;
+                        case "нет":
+                            doTest = false;
+                            Console.WriteLine($"Всего хорошего, {personName}");
+                            break;
+                        default:
+                            Console.WriteLine($"Не понял ответа, повторите (Да/Нет)");
+                            break;
+                    }
+                }
             }
         }
     }
