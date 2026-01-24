@@ -1,45 +1,41 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
-
-namespace geniusIdiotConsoleApp
+﻿namespace geniusIdiotConsoleApp
 {
     public class Program
     {
        static void Main(string[] args)
         {
-            Console.WriteLine("Здравствуйте! Как к Вам обращаться?"); // Блок с приветсвием
+            Console.WriteLine("Здравствуйте! Как к Вам обращаться?"); // начало теста
             string userName = Console.ReadLine();
             Console.WriteLine($"Очень приятно, {userName}. Начнем тест:");
             System.Threading.Thread.Sleep(1500);
 
-            bool doTest = true; // Блок с тестом
+            bool doTest = true;
             while (doTest)
             {
-                int correctAnswer = 0;
+                int correctAnswers = 0;
 
-                (string Question, int Answer)[] dataTest = GetDataTest();
+                (string Question, int Answer)[] dataTest = GetDataTest(); // получили воросы
+                Random.Shared.Shuffle(dataTest); // перемешали вопросы
 
-                Random.Shared.Shuffle(dataTest);
-
-                for (int i = 0; i < 5; i++)
+                for (int i = 0; i < dataTest.Length; i++) // вывод вопросов
                 {
                     Console.WriteLine($"Вопрос №{i + 1}\n{dataTest[i].Question}");
-
-                    int userAnswer = InputAnswer();
+                    int userAnswer = CheckInputAnswer();
                     if (userAnswer == dataTest[i].Answer)
                     {
-                        correctAnswer++;
+                        correctAnswers++;
                     }
 
                     System.Threading.Thread.Sleep(500);
                 }
 
-                Console.WriteLine($"Количество верных ответов: {correctAnswer}");
-                Console.WriteLine($"{userName}, Ваш диагноз - {Diagnosis(correctAnswer)}");
+                Console.WriteLine($"Количество верных ответов: {correctAnswers}"); // итог теста
+                int numberDiagnos = GetIndexDiagnos(correctAnswers, dataTest.Length);
+                Console.WriteLine($"{userName}, Ваш диагноз - {GetDataDiagnosis(numberDiagnos)}");
 
-                Console.WriteLine("Хотите пройти тест ещё раз? (Да/Нет)");
 
+                Console.WriteLine("Хотите пройти тест ещё раз? (Да/Нет)"); // повтор теста
                 string? newTest = null;
-                
                 while ( newTest != "да" && newTest != "нет")
                 {
                     newTest = Console.ReadLine().ToLower();
@@ -72,7 +68,7 @@ namespace geniusIdiotConsoleApp
             return TestData;
         }
 
-        public static string Diagnosis(int counterRightAnswer)
+        public static string GetDataDiagnosis(int diagnosisIndex)
         {
             string[] diagnosis = new string[6]
             {
@@ -83,10 +79,10 @@ namespace geniusIdiotConsoleApp
                 "талант",
                 "гений"
             };
-            return diagnosis[counterRightAnswer];
+            return diagnosis[diagnosisIndex];
         }
 
-        public static int InputAnswer()
+        public static int CheckInputAnswer()
         {
             while (true)
             {
@@ -98,6 +94,12 @@ namespace geniusIdiotConsoleApp
 
                 Console.WriteLine("Некорректный ввод. Введите целое число.");
             }
+        }
+
+        public static int GetIndexDiagnos(int correctAnswers, int totalQuestions)
+        {
+            int result = (int)Math.Floor(correctAnswers * 5.0 / totalQuestions);
+            return result;
         }
     }
 }
