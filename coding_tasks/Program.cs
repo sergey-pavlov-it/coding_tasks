@@ -1,7 +1,64 @@
-﻿namespace geniusIdiotConsoleApp
+﻿using static System.Runtime.InteropServices.JavaScript.JSType;
+
+namespace geniusIdiotConsoleApp
 {
     public class Program
     {
+       static void Main(string[] args)
+        {
+            Console.WriteLine("Здравствуйте! Как к Вам обращаться?"); // Блок с приветсвием
+            string userName = Console.ReadLine();
+            Console.WriteLine($"Очень приятно, {userName}. Начнем тест:");
+            System.Threading.Thread.Sleep(1500);
+
+            bool doTest = true; // Блок с тестом
+            while (doTest)
+            {
+                int correctAnswer = 0;
+
+                (string Question, int Answer)[] dataTest = GetDataTest();
+
+                Random.Shared.Shuffle(dataTest);
+
+                for (int i = 0; i < 5; i++)
+                {
+                    Console.WriteLine($"Вопрос №{i + 1}\n{dataTest[i].Question}");
+
+                    int userAnswer = InputAnswer();
+                    if (userAnswer == dataTest[i].Answer)
+                    {
+                        correctAnswer++;
+                    }
+
+                    System.Threading.Thread.Sleep(500);
+                }
+
+                Console.WriteLine($"Количество верных ответов: {correctAnswer}");
+                Console.WriteLine($"{userName}, Ваш диагноз - {Diagnosis(correctAnswer)}");
+
+                Console.WriteLine("Хотите пройти тест ещё раз? (Да/Нет)");
+
+                string? newTest = null;
+                
+                while ( newTest != "да" && newTest != "нет")
+                {
+                    newTest = Console.ReadLine().ToLower();
+                    switch (newTest)
+                    {
+                        case "да":
+                            Console.WriteLine("Отлично, перейдем к вопросам");
+                            break;
+                        case "нет":
+                            doTest = false;
+                            Console.WriteLine($"Всего хорошего, {userName}");
+                            break;
+                        default:
+                            Console.WriteLine($"Не понял ответа, повторите (Да/Нет)");
+                            break;
+                    }
+                }
+            }
+        }
         public static (string, int)[] GetDataTest()
         {
             (string Question, int Answer)[] TestData = new (string Question, int Answer)[5]
@@ -29,60 +86,17 @@
             return diagnosis[counterRightAnswer];
         }
 
-        static void Main(string[] args)
+        public static int InputAnswer()
         {
-            Console.WriteLine("Здравствуйте! Как к Вам обращаться?");
-            string personName = Console.ReadLine();
-            Console.WriteLine($"Очень приятно, {personName}. Начнем тест:");
-            System.Threading.Thread.Sleep(1500);
-
-            bool doTest = true;
-
-            while (doTest)
+            while (true)
             {
-                int correctAnswer = 0;
-
-                (string Question, int Answer)[] dataTest = GetDataTest();
-
-                Random.Shared.Shuffle(dataTest);
-
-                for (int i = 0; i < 5; i++)
+                string input = (Console.ReadLine() ?? "").Trim();
+                if (int.TryParse(input, out int number))
                 {
-                    Console.WriteLine($"Вопрос №{i + 1}\n{dataTest[i].Question}"); 
-
-                    int userAnswer = int.Parse(Console.ReadLine());
-                    if (userAnswer == dataTest[i].Answer)
-                    {
-                        correctAnswer++;
-                    }
-
-                    System.Threading.Thread.Sleep(500);
+                    return number;
                 }
 
-                Console.WriteLine($"Количество верных ответов: {correctAnswer}");
-                Console.WriteLine($"{personName}, Ваш диагноз - {Diagnosis(correctAnswer)}");
-
-                Console.WriteLine("Хотите пройти тест ещё раз? (Да/Нет)");
-
-                string? newTest = null;
-                
-                while ( newTest != "да" && newTest != "нет")
-                {
-                    newTest = Console.ReadLine().ToLower();
-                    switch (newTest)
-                    {
-                        case "да":
-                            Console.WriteLine("Отлично, перейдем к вопросам");
-                            break;
-                        case "нет":
-                            doTest = false;
-                            Console.WriteLine($"Всего хорошего, {personName}");
-                            break;
-                        default:
-                            Console.WriteLine($"Не понял ответа, повторите (Да/Нет)");
-                            break;
-                    }
-                }
+                Console.WriteLine("Некорректный ввод. Введите целое число.");
             }
         }
     }
