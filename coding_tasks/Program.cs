@@ -2,12 +2,12 @@
 {
     public class Program
     {
-       static void Main(string[] args)
+       static async Task Main(string[] args)
         {
             Console.WriteLine("Здравствуйте! Как к Вам обращаться?"); // начало теста
             string userName = Console.ReadLine();
             Console.WriteLine($"Очень приятно, {userName}. Начнем тест:");
-            System.Threading.Thread.Sleep(1500);
+            System.Threading.Thread.Sleep(1000);
 
             bool doTest = true;
             while (doTest)
@@ -31,7 +31,8 @@
 
                 Console.WriteLine($"Количество верных ответов: {correctAnswers}"); // итог теста
                 int numberDiagnos = GetIndexDiagnos(correctAnswers, dataTest.Length);
-                Console.WriteLine($"{userName}, Ваш диагноз - {GetDataDiagnosis(numberDiagnos)}");
+                string userDiagnos = GetDiagnos(numberDiagnos);
+                Console.WriteLine($"{userName}, Ваш диагноз - {userDiagnos}");
 
 
                 Console.WriteLine("Хотите пройти тест ещё раз? (Да/Нет)"); // повтор теста
@@ -53,6 +54,8 @@
                             break;
                     }
                 }
+                await SaveResult(userName, correctAnswers, userDiagnos); // сохраняем результат
+                await ShowResult(); // выводим таблицу с результатами
             }
         }
         public static (string, int)[] GetDataTest()
@@ -68,7 +71,7 @@
             return TestData;
         }
 
-        public static string GetDataDiagnosis(int diagnosisIndex)
+        public static string GetDiagnos(int diagnosisIndex)
         {
             string[] diagnosis = new string[6]
             {
@@ -100,6 +103,35 @@
         {
             int result = (int)Math.Floor(correctAnswers * 5.0 / totalQuestions);
             return result;
+        }
+
+        public static async Task SaveResult(string userName, int correctAnswers, string userDiagnos)
+        {
+            string path = @"E:\\Разное\\Обучение\\C#\\coding_tasks\\test_result\\result.csv";
+            string text = $"{userName};{correctAnswers};{userDiagnos}";
+            using (StreamWriter writer = new StreamWriter(path, true))
+            {
+                await writer.WriteLineAsync(text);
+            }
+        }
+
+        public static async Task ShowResult()
+        {
+            string path = @"E:\\Разное\\Обучение\\C#\\coding_tasks\\test_result\\result.csv";
+            using (StreamReader reader = new StreamReader(path))
+            {
+                string column1 = "ФИО";
+                string column2 = "Кол-во верных ответов";
+                string column3 = "Диагноз";
+                Console.WriteLine($"| {column1.PadRight(10)} | {column2.PadRight(25)} | {column3.PadRight(10)} |");
+                Console.WriteLine($"| {new string('-', 10)} | {new string('-', 25)} | {new string('-', 10)} |");
+                string? line;
+                while ((line = await reader.ReadLineAsync()) != null)
+                {
+                    string[] parts = line.Split(';');
+                    Console.WriteLine($"| {parts[0].PadRight(10)} | {parts[1].PadRight(25)} | {parts[2].PadRight(10)} |");
+                }
+            }
         }
     }
 }
