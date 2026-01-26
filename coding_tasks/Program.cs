@@ -1,4 +1,6 @@
-﻿namespace geniusIdiotConsoleApp
+﻿using System.Text;
+
+namespace geniusIdiotConsoleApp
 {
     public class Program
     {
@@ -107,9 +109,9 @@
 
         public static async Task SaveResult(string userName, int correctAnswers, string userDiagnos)
         {
-            string path = @"E:\\Разное\\Обучение\\C#\\coding_tasks\\test_result\\result.csv";
+            string path = "userResult.csv";
             string text = $"{userName};{correctAnswers};{userDiagnos}";
-            using (StreamWriter writer = new StreamWriter(path, true))
+            using (StreamWriter writer = new StreamWriter(path, true, Encoding.UTF8))
             {
                 await writer.WriteLineAsync(text);
             }
@@ -117,7 +119,7 @@
 
         public static async Task ShowResult()
         {
-            string path = @"E:\\Разное\\Обучение\\C#\\coding_tasks\\test_result\\result.csv";
+            string path = "userResult.csv";
             using (StreamReader reader = new StreamReader(path))
             {
                 string column1 = "ФИО";
