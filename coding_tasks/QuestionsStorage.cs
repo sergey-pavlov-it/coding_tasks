@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GeniusIdiotConsoleApp
 {
-    public class QuestionStore
+    public class QuestionsStorage
     {
         public static readonly List<Question> All = new()
         {
