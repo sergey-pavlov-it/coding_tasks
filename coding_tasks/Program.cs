@@ -1,63 +1,57 @@
-﻿using System.Text;
+﻿using GeniusIdiotConsoleApp.Application;
+using GeniusIdiotConsoleApp.Domain;
+using GeniusIdiotConsoleApp.Infrastructure;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace geniusIdiotConsoleApp
+namespace GeniusIdiotConsoleApp
 {
     public class Program
     {
        static async Task Main(string[] args)
         {
             Console.WriteLine("Здравствуйте! Как к Вам обращаться?"); // начало теста
-            string userName = Console.ReadLine();
-            Console.WriteLine($"Очень приятно, {userName}. Начнем тест:");
-            System.Threading.Thread.Sleep(1000);
+            User currentUser = new User((Console.ReadLine() ?? "").Trim());
+            QuestionsRepository questions = new QuestionsRepository(); // получили воросы
 
+            Console.WriteLine($"Очень приятно, {currentUser.Name}. Начнем тест:");
+
+
+            QuizEngine startTest = new QuizEngine(); // создаем объект для старта теста
             bool doTest = true;
             while (doTest)
             {
-                int correctAnswers = 0;
-
-                (string Question, int Answer)[] dataTest = GetDataTest(); // получили воросы
-                Random.Shared.Shuffle(dataTest); // перемешали вопросы
-
-                for (int i = 0; i < dataTest.Length; i++) // вывод вопросов
-                {
-                    Console.WriteLine($"Вопрос №{i + 1}\n{dataTest[i].Question}");
-                    int userAnswer = CheckInputAnswer();
-                    if (userAnswer == dataTest[i].Answer)
-                    {
-                        correctAnswers++;
-                    }
-
-                    System.Threading.Thread.Sleep(500);
-                }
+                int correctAnswers = startTest.Run(questions.AllQuestions); // запуск теста
 
                 Console.WriteLine($"Количество верных ответов: {correctAnswers}"); // итог теста
-                int numberDiagnos = GetIndexDiagnos(correctAnswers, dataTest.Length);
+                
+                int numberDiagnos = GetIndexDiagnos(correctAnswers, questions.AllQuestions.Count);
                 string userDiagnos = GetDiagnos(numberDiagnos);
-                Console.WriteLine($"{userName}, Ваш диагноз - {userDiagnos}");
+                Console.WriteLine($"{currentUser.Name}, Ваш диагноз - {userDiagnos}");
 
 
-                Console.WriteLine("Хотите пройти тест ещё раз? (Да/Нет)"); // повтор теста
-                string? newTest = null;
-                while ( newTest != "да" && newTest != "нет")
-                {
-                    newTest = Console.ReadLine().ToLower();
-                    switch (newTest)
-                    {
-                        case "да":
-                            Console.WriteLine("Отлично, перейдем к вопросам");
-                            break;
-                        case "нет":
-                            doTest = false;
-                            Console.WriteLine($"Всего хорошего, {userName}");
-                            break;
-                        default:
-                            Console.WriteLine($"Не понял ответа, повторите (Да/Нет)");
-                            break;
-                    }
-                }
-                await SaveResult(userName, correctAnswers, userDiagnos); // сохраняем результат
-                await ShowResult(); // выводим таблицу с результатами
+                //Console.WriteLine("Хотите пройти тест ещё раз? (Да/Нет)"); // повтор теста
+                //string? newTest = null;
+                //while ( newTest != "да" && newTest != "нет")
+                //{
+                //    newTest = Console.ReadLine().ToLower();
+                //    switch (newTest)
+                //    {
+                //        case "да":
+                //            Console.WriteLine("Отлично, перейдем к вопросам");
+                //            break;
+                //        case "нет":
+                //            doTest = false;
+                //            Console.WriteLine($"Всего хорошего, {userName}");
+                //            break;
+                //        default:
+                //            Console.WriteLine($"Не понял ответа, повторите (Да/Нет)");
+                //            break;
+                //    }
+                //}
+                //await SaveResult(userName, correctAnswers, userDiagnos); // сохраняем результат
+                //await ShowResult(); // выводим таблицу с результатами
             }
         }
         public static (string, int)[] GetDataTest()
@@ -85,20 +79,6 @@ namespace geniusIdiotConsoleApp
                 "гений"
             };
             return diagnosis[diagnosisIndex];
-        }
-
-        public static int CheckInputAnswer()
-        {
-            while (true)
-            {
-                string input = (Console.ReadLine() ?? "").Trim();
-                if (int.TryParse(input, out int number))
-                {
-                    return number;
-                }
-
-                Console.WriteLine("Некорректный ввод. Введите целое число.");
-            }
         }
 
         public static int GetIndexDiagnos(int correctAnswers, int totalQuestions)

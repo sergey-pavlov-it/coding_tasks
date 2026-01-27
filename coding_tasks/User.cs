@@ -5,15 +5,13 @@ using GeniusIdiotConsoleApp.Infrastructure;
 
 namespace GeniusIdiotConsoleApp.Domain
 {
-    public class Question
+    public class User
     {
-        public string Text;
-        public int Answer;
+        public string Name { get; }
 
-        public Question(string text, int answer) 
+        public User(string name)
         {
-            Text = text;
-            Answer = answer;
+            Name = name;
         }
     }
 }

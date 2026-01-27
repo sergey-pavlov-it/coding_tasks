@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using GeniusIdiotConsoleApp.Domain;
 
-namespace GeniusIdiotConsoleApp
+namespace GeniusIdiotConsoleApp.Infrastructure
 {
-    public class QuestionsStorage
+    public class QuestionsRepository
     {
-        public static readonly List<Question> All = new()
+        public readonly List<Question> AllQuestions = new List<Question>()
         {
             new Question("Сколько будет два плюс два умноженное на два?", 6),
             new Question("Бревно нужно распилить на 10 частей. Сколько распилов нужно сделать?", 9),
