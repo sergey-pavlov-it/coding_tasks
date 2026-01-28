@@ -19,6 +19,7 @@ namespace GeniusIdiotConsoleApp
 
 
             QuizEngine startTest = new QuizEngine(); // создаем объект для старта теста
+            UserResultRepository resultRepo = new UserResultRepository(); // для оперирование сохранением/чтением результатов
             bool doTest = true;
             while (doTest)
             {
@@ -30,41 +31,30 @@ namespace GeniusIdiotConsoleApp
                 string userDiagnos = GetDiagnos(numberDiagnos);
                 Console.WriteLine($"{currentUser.Name}, Ваш диагноз - {userDiagnos}");
 
+                await resultRepo.SaveResult(currentUser.Name, correctAnswers, userDiagnos); // сохранили результат
 
-                //Console.WriteLine("Хотите пройти тест ещё раз? (Да/Нет)"); // повтор теста
-                //string? newTest = null;
-                //while ( newTest != "да" && newTest != "нет")
-                //{
-                //    newTest = Console.ReadLine().ToLower();
-                //    switch (newTest)
-                //    {
-                //        case "да":
-                //            Console.WriteLine("Отлично, перейдем к вопросам");
-                //            break;
-                //        case "нет":
-                //            doTest = false;
-                //            Console.WriteLine($"Всего хорошего, {userName}");
-                //            break;
-                //        default:
-                //            Console.WriteLine($"Не понял ответа, повторите (Да/Нет)");
-                //            break;
-                //    }
-                //}
-                //await SaveResult(userName, correctAnswers, userDiagnos); // сохраняем результат
-                //await ShowResult(); // выводим таблицу с результатами
+                Console.WriteLine("Хотите пройти тест ещё раз? (Да/Нет)"); // повтор теста
+                while (true)
+                {
+                    string answer = (Console.ReadLine() ?? "").Trim().ToLowerInvariant();
+
+                    if (answer == "да")
+                    {
+                        Console.WriteLine("Отлично, перейдем к вопросам");
+                        break; // выходим из цикла ввода, doTest остаётся true
+                    }
+
+                    if (answer == "нет")
+                    {
+                        doTest = false;
+                        Console.WriteLine($"Всего хорошего, {currentUser.Name}");
+                        break;
+                    }
+
+                    Console.WriteLine("Не понял ответа, повторите (да/нет)");
+                }
             }
-        }
-        public static (string, int)[] GetDataTest()
-        {
-            (string Question, int Answer)[] TestData = new (string Question, int Answer)[5]
-            {
-                ("Сколько будет два плюс два умноженное на два?", 6),
-                ("Бревно нужно распилить на 10 частей. Сколько распилов нужно сделать?", 9),
-                ("На двух руках 10 пальцев. Сколько пальцев на 5 руках?", 25),
-                ("Укол делают каждые полчаса. Сколько нужно минут, чтобы сделать три укола?", 60),
-                ("Пять свечей горело, две потухли. Сколько свечей осталось?", 2)
-            };
-            return TestData;
+            await resultRepo.ShowResult();
         }
 
         public static string GetDiagnos(int diagnosisIndex)
@@ -85,35 +75,6 @@ namespace GeniusIdiotConsoleApp
         {
             int result = (int)Math.Floor(correctAnswers * 5.0 / totalQuestions);
             return result;
-        }
-
-        public static async Task SaveResult(string userName, int correctAnswers, string userDiagnos)
-        {
-            string path = "userResult.csv";
-            string text = $"{userName};{correctAnswers};{userDiagnos}";
-            using (StreamWriter writer = new StreamWriter(path, true, Encoding.UTF8))
-            {
-                await writer.WriteLineAsync(text);
-            }
-        }
-
-        public static async Task ShowResult()
-        {
-            string path = "userResult.csv";
-            using (StreamReader reader = new StreamReader(path))
-            {
-                string column1 = "ФИО";
-                string column2 = "Кол-во верных ответов";
-                string column3 = "Диагноз";
-                Console.WriteLine($"| {column1.PadRight(10)} | {column2.PadRight(25)} | {column3.PadRight(10)} |");
-                Console.WriteLine($"| {new string('-', 10)} | {new string('-', 25)} | {new string('-', 10)} |");
-                string? line;
-                while ((line = await reader.ReadLineAsync()) != null)
-                {
-                    string[] parts = line.Split(';');
-                    Console.WriteLine($"| {parts[0].PadRight(10)} | {parts[1].PadRight(25)} | {parts[2].PadRight(10)} |");
-                }
-            }
         }
     }
 }
