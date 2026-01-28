@@ -31,7 +31,7 @@ namespace GeniusIdiotConsoleApp
                 string userDiagnos = GetDiagnos(numberDiagnos);
                 Console.WriteLine($"{currentUser.Name}, Ваш диагноз - {userDiagnos}");
 
-                await resultRepo.SaveResult(currentUser.Name, correctAnswers, userDiagnos); // сохранили результат
+                resultRepo.SaveResult(currentUser.Name, correctAnswers, userDiagnos); // сохранили результат
 
                 Console.WriteLine("Хотите пройти тест ещё раз? (Да/Нет)"); // повтор теста
                 while (true)
@@ -54,7 +54,7 @@ namespace GeniusIdiotConsoleApp
                     Console.WriteLine("Не понял ответа, повторите (да/нет)");
                 }
             }
-            await resultRepo.ShowResult();
+            resultRepo.ShowResult();
         }
 
         public static string GetDiagnos(int diagnosisIndex)
