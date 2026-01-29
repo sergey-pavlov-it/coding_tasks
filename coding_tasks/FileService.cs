@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GeniusIdiotConsoleApp.Domain;
+using System;
 using System.Collections.Generic;
 using System.Reflection.PortableExecutable;
 using System.Text;
@@ -7,6 +8,11 @@ namespace GeniusIdiotConsoleApp.Infrastructure
 {
     public class FileService
     {
+        public void EnsureFileExists(string path)
+        {
+            using (FileStream fstream = new FileStream(path, FileMode.OpenOrCreate)) { }
+        }
+
         public void AppendLine(string path, string line)
         {
             using (StreamWriter writer = new StreamWriter(path, true, Encoding.UTF8))
