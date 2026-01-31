@@ -11,7 +11,9 @@ namespace GeniusIdiotConsoleApp
     {
         static void Main(string[] args)
         {
-            QuestionsRepository questionsRepository = new QuestionsRepository();
+            QuestionsRepository questionsRepository = new QuestionsRepository(); // для оперирования репозиторием вопросов
+            QuizEngine startTest = new QuizEngine(); // для старта теста
+            UserResultRepository resultRepo = new UserResultRepository(); // для оперирования сохранением/чтением результатов
 
             while (true)
             {
@@ -23,7 +25,7 @@ namespace GeniusIdiotConsoleApp
                 switch ((Console.ReadLine() ?? "").Trim())
                 {
                     case "1":
-                        RunQuizScenario(questionsRepository);
+                        RunQuizScenario(questionsRepository, startTest, resultRepo);
                         break;
                     case "2":
                         AddQuestionScenario(questionsRepository);
@@ -39,11 +41,8 @@ namespace GeniusIdiotConsoleApp
                 }
             }
 
-            static void RunQuizScenario(QuestionsRepository questionsRepository) 
+            static void RunQuizScenario(QuestionsRepository questionsRepository, QuizEngine startTest, UserResultRepository resultRepo) 
             {
-                QuizEngine startTest = new QuizEngine(); // создаем объект для старта теста
-                UserResultRepository resultRepo = new UserResultRepository(); // для оперирование сохранением/чтением результатов
-
                 Console.WriteLine("Здравствуйте! Как к Вам обращаться?"); // знакомство
                 User currentUser = new User((Console.ReadLine() ?? "").Trim());
                 Console.WriteLine($"Очень приятно, {currentUser.Name}. Начнем тест:");
@@ -87,10 +86,10 @@ namespace GeniusIdiotConsoleApp
             static void AddQuestionScenario(QuestionsRepository questionsRepository)
             {
                 Console.WriteLine("Введите вопрос:");
-                string question = Console.ReadLine();
+                string? question = Console.ReadLine();
 
                 Console.WriteLine("Введите ответ:");
-                string answer = Console.ReadLine();
+                string? answer = Console.ReadLine();
 
                 bool ok = questionsRepository.AddQuestion(question, answer, out string error);
 
