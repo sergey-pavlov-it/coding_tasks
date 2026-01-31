@@ -11,23 +11,23 @@ namespace GeniusIdiotConsoleApp
     {
        static async Task Main(string[] args)
         {
-            Console.WriteLine("Здравствуйте! Как к Вам обращаться?"); // начало теста
+            QuestionsRepository questions = new QuestionsRepository(); // получили вопросы
+
+            Console.WriteLine("Здравствуйте! Как к Вам обращаться?"); // знакомство
             User currentUser = new User((Console.ReadLine() ?? "").Trim());
-            QuestionsRepository questions = new QuestionsRepository(); // получили воросы
-
             Console.WriteLine($"Очень приятно, {currentUser.Name}. Начнем тест:");
-
 
             QuizEngine startTest = new QuizEngine(); // создаем объект для старта теста
             UserResultRepository resultRepo = new UserResultRepository(); // для оперирование сохранением/чтением результатов
+
             bool doTest = true;
             while (doTest)
             {
-                int correctAnswers = startTest.Run(questions.AllQuestions); // запуск теста
+                int correctAnswers = startTest.Run(questions.Questions); // запуск теста
 
                 Console.WriteLine($"Количество верных ответов: {correctAnswers}"); // итог теста
                 
-                int numberDiagnos = GetIndexDiagnos(correctAnswers, questions.AllQuestions.Count);
+                int numberDiagnos = GetIndexDiagnos(correctAnswers, questions.Questions.Count);
                 string userDiagnos = GetDiagnos(numberDiagnos);
                 Console.WriteLine($"{currentUser.Name}, Ваш диагноз - {userDiagnos}");
 

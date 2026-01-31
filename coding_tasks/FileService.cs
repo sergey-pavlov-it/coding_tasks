@@ -23,7 +23,7 @@ namespace GeniusIdiotConsoleApp.Infrastructure
 
         public string[] ReadLines(string path)
         {
-            using (StreamReader reader = new StreamReader(path))
+            using (StreamReader reader = new StreamReader(path, Encoding.UTF8))
             {
                 List<string> lines = new List<string>();
                 string? line;
