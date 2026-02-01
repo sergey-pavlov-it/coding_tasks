@@ -35,5 +35,16 @@ namespace GeniusIdiotConsoleApp.Infrastructure
                 return result;
             }
         }
+
+        public void OverwriteFile(string path, IEnumerable<string> lines)
+        {
+            using (StreamWriter writer = new StreamWriter(path, false, Encoding.UTF8))
+            {
+                foreach (string line in lines)
+                {
+                    writer.WriteLine(line);
+                }
+            }
+        }
     }
 }

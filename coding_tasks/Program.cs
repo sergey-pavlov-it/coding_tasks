@@ -19,7 +19,8 @@ namespace GeniusIdiotConsoleApp
             {
                 Console.WriteLine("1. Пройти тест");
                 Console.WriteLine("2. Добавить вопрос");
-                Console.WriteLine("3. Посмотреть результаты");
+                Console.WriteLine("3. Удалить вопрос");
+                Console.WriteLine("4. Посмотреть результаты");
                 Console.WriteLine("0. Выход");
 
                 switch ((Console.ReadLine() ?? "").Trim())
@@ -31,12 +32,15 @@ namespace GeniusIdiotConsoleApp
                         AddQuestionScenario(questionsRepository);
                         break;
                     case "3":
+                        DeleteQuestionScenario(questionsRepository);
+                        break;
+                    case "4":
                         ShowResultsScenario();
                         break;
                     case "0":
                         return;
                     default:
-                        Console.WriteLine("Введи 1/2/3/0");
+                        Console.WriteLine("Введи 1/2/3/4/0");
                         break;
                 }
             }
@@ -105,12 +109,31 @@ namespace GeniusIdiotConsoleApp
 
             }
 
+            static void DeleteQuestionScenario(QuestionsRepository questionsRepository)
+            {
+                for (int i = 1; i <  questionsRepository.Questions.Count + 1; i++)
+                {
+                    Console.WriteLine($"{i}. {questionsRepository.Questions[i - 1].Text}");
+                }
+                Console.WriteLine("Введите номер удаляемого вопроса");
+                string indexDelete = (Console.ReadLine() ?? "").Trim();
+                bool ok = questionsRepository.DeleteQuestion(indexDelete, out string error);
+                if (!ok)
+                {
+                    Console.WriteLine($"Вопрос не удален: {error}");
+                    return;
+                }
+                else
+                {
+                    Console.WriteLine("Вопрос удален.");
+                }
+            }
+
             static void ShowResultsScenario()
             {
                 UserResultRepository resultRepo = new UserResultRepository();
                 resultRepo.ShowResult();
             }
-
         }
 
         public static string GetDiagnos(int diagnosisIndex)

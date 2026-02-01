@@ -63,5 +63,33 @@ namespace GeniusIdiotConsoleApp.Infrastructure
             _fileService.AppendLine(_path, $"{text};{answer}");
             return true;
         }
+
+        public bool DeleteQuestion(string indexDelete, out string error)
+        {
+            error = "";
+
+            if (!int.TryParse(indexDelete, out int index))
+            {
+                error = "Введите число";
+                return false;
+            }
+
+            if (index < 1 || index > Questions.Count)
+            {
+                error = "Строки с таким номером не существует";
+                return false;
+            }
+
+            Questions.RemoveAt(index - 1);
+
+            List<string> lines = new List<string>();
+            foreach (Question question in Questions)
+            {
+                lines.Add($"{question.Text};{question.Answer}");
+            }
+
+            _fileService.OverwriteFile(_path, lines);
+            return true;
+        }
     }
 }
