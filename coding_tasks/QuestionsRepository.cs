@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using GeniusIdiotConsoleApp.Domain;
+﻿using GeniusIdiotConsoleApp.Domain;
 
 namespace GeniusIdiotConsoleApp.Infrastructure
 {
@@ -13,7 +10,10 @@ namespace GeniusIdiotConsoleApp.Infrastructure
 
         public QuestionsRepository()
         {
-            _path = "questions.csv";
+            var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "GeniusIdiot");
+            Directory.CreateDirectory(dir);
+
+            _path = Path.Combine(dir, "questions.csv");
             _fileService = new FileService();
             Questions = new List<Question>();
             _fileService.EnsureFileExists(_path);

@@ -12,7 +12,10 @@ namespace GeniusIdiotConsoleApp.Infrastructure
 
         public UserResultRepository()
         {
-            _path = "userResult.csv";
+            var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "GeniusIdiot");
+            Directory.CreateDirectory(dir);
+
+            _path = Path.Combine(dir, "userResult.csv");
             _fileService = new FileService();
         }
 
