@@ -1,6 +1,6 @@
 ﻿namespace GeniusIdiotFormApp
 {
-    partial class Form1
+    partial class StartTest
     {
         /// <summary>
         /// Required designer variable.
@@ -30,13 +30,14 @@
         {
             SuspendLayout();
             // 
-            // Form1
+            // StartTest
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(404, 456);
-            Name = "Form1";
-            Text = "Form1";
+            BackColor = SystemColors.ScrollBar;
+            ClientSize = new Size(543, 468);
+            Name = "StartTest";
+            Text = "Test";
             ResumeLayout(false);
         }
 

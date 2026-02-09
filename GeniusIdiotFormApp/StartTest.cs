@@ -8,9 +8,9 @@ using System.Windows.Forms;
 
 namespace GeniusIdiotFormApp
 {
-    public partial class Form1 : Form
+    public partial class StartTest : Form
     {
-        public Form1()
+        public StartTest()
         {
             InitializeComponent();
         }
