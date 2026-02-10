@@ -23,5 +23,10 @@ namespace GeniusIdiotFormApp
             startTest.Show();
             this.Hide();
         }
+
+        private void ExitButton_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }
