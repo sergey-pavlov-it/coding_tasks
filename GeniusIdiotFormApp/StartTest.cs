@@ -1,6 +1,8 @@
-﻿using GeniusIdiotConsoleApp.Application;
+﻿using GeniusIdiotClassLibrary;
+using GeniusIdiotConsoleApp.Application;
 using GeniusIdiotConsoleApp.Domain;
 using GeniusIdiotConsoleApp.Infrastructure;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace GeniusIdiotFormApp
 {
@@ -9,17 +11,17 @@ namespace GeniusIdiotFormApp
         QuizEngine startTest = new QuizEngine(); // для старта теста
         QuestionsRepository questionsRepository = new QuestionsRepository(); // для оперирования репозиторием вопросов
         UserResultRepository resultRepo = new UserResultRepository(); // для оперирования сохранением/чтением результатов
+        DiagnoseCalculator resultDiagnose = new DiagnoseCalculator(); // для получения диагноза
 
         private int _currentIndex = 0;
         private List<Question> _questions = new List<Question>();
         private int _correctAnswers = 0;
+        private readonly string _userName;
 
-
-
-
-        public StartTest()
+        public StartTest(User userName)
         {
             InitializeComponent();
+            _userName = userName.Name;
         }
 
         private void AnswerUserTextBox_TextChanged(object sender, EventArgs e)
@@ -57,11 +59,15 @@ namespace GeniusIdiotFormApp
             }
 
             _currentIndex++;
+            AnswerUserTextBox.Text = "";
+            AnswerUserTextBox.Focus();
             ShowQuestion();
         }
 
         private void ShowQuestion()
         {
+
+
             if (_questions.Count == 0)
             {
                 QuestionsLabel.Text = "В репозитории нет вопросов";
@@ -82,11 +88,10 @@ namespace GeniusIdiotFormApp
 
         private void FinishQuiz()
         {
-            MessageBox.Show($"Кол-во верных ответов: {_correctAnswers}\nВаш диагноз: ");
+            string userDiagnose = resultDiagnose.CalculateDiagnos(_correctAnswers, questionsRepository.Questions.Count);
+            MessageBox.Show($"Кол-во верных ответов: {_correctAnswers}\nВаш диагноз: {userDiagnose}");
+            resultRepo.SaveResult(_userName, _correctAnswers, userDiagnose);
             this.Close();
         }
-
-
-
     }
 }

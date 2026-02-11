@@ -1,4 +1,5 @@
-﻿using GeniusIdiotConsoleApp.Application;
+﻿using GeniusIdiotClassLibrary;
+using GeniusIdiotConsoleApp.Application;
 using GeniusIdiotConsoleApp.Domain;
 using GeniusIdiotConsoleApp.Infrastructure;
 using System;
@@ -14,6 +15,7 @@ namespace GeniusIdiotConsoleApp
             QuestionsRepository questionsRepository = new QuestionsRepository(); // для оперирования репозиторием вопросов
             QuizEngine startTest = new QuizEngine(); // для старта теста
             UserResultRepository resultRepo = new UserResultRepository(); // для оперирования сохранением/чтением результатов
+            DiagnoseCalculator resultDiagnose = new DiagnoseCalculator(); // для получения диагноза
 
             while (true)
             {
@@ -26,7 +28,7 @@ namespace GeniusIdiotConsoleApp
                 switch ((Console.ReadLine() ?? "").Trim())
                 {
                     case "1":
-                        RunQuizScenario(questionsRepository, startTest, resultRepo);
+                        RunQuizScenario(questionsRepository, startTest, resultRepo, resultDiagnose);
                         break;
                     case "2":
                         AddQuestionScenario(questionsRepository);
@@ -45,7 +47,7 @@ namespace GeniusIdiotConsoleApp
                 }
             }
 
-            static void RunQuizScenario(QuestionsRepository questionsRepository, QuizEngine startTest, UserResultRepository resultRepo) 
+            static void RunQuizScenario(QuestionsRepository questionsRepository, QuizEngine startTest, UserResultRepository resultRepo, DiagnoseCalculator resultDiagnose) 
             {
                 Console.WriteLine("Здравствуйте! Как к Вам обращаться?"); // знакомство
                 User currentUser = new User((Console.ReadLine() ?? "").Trim());
@@ -58,8 +60,8 @@ namespace GeniusIdiotConsoleApp
 
                     Console.WriteLine($"Количество верных ответов: {correctAnswers}"); // итог теста
 
-                    int numberDiagnos = GetIndexDiagnos(correctAnswers, questionsRepository.Questions.Count);
-                    string userDiagnos = GetDiagnos(numberDiagnos);
+                    string userDiagnos = resultDiagnose.CalculateDiagnos(correctAnswers, questionsRepository.Questions.Count);
+
                     Console.WriteLine($"{currentUser.Name}, Ваш диагноз - {userDiagnos}");
 
                     resultRepo.SaveResult(currentUser.Name, correctAnswers, userDiagnos); // сохранили результат
@@ -134,26 +136,6 @@ namespace GeniusIdiotConsoleApp
                 UserResultRepository resultRepo = new UserResultRepository();
                 resultRepo.ShowResult();
             }
-        }
-
-        public static string GetDiagnos(int diagnosisIndex)
-        {
-            string[] diagnosis = new string[6]
-            {
-                "идиот",
-                "кретин",
-                "дурак",
-                "нормальный",
-                "талант",
-                "гений"
-            };
-            return diagnosis[diagnosisIndex];
-        }
-
-        public static int GetIndexDiagnos(int correctAnswers, int totalQuestions)
-        {
-            int result = (int)Math.Floor(correctAnswers * 5.0 / totalQuestions);
-            return result;
         }
     }
 }
