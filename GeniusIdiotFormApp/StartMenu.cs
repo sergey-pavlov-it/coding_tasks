@@ -17,6 +17,11 @@ namespace GeniusIdiotFormApp
 {
     public partial class StartMenu : Form
     {
+        QuizEngine startTest = new QuizEngine(); // для старта теста
+        QuestionsRepository questionsRepository = new QuestionsRepository(); // для оперирования репозиторием вопросов
+        UserResultRepository resultRepo = new UserResultRepository(); // для оперирования сохранением/чтением результатов
+        DiagnoseCalculator resultDiagnose = new DiagnoseCalculator(); // для получения диагноза
+
         public StartMenu()
         {
             InitializeComponent();
@@ -30,7 +35,7 @@ namespace GeniusIdiotFormApp
 
             User currentUser = new User(userName);
 
-            var startTest = new StartTest(currentUser);
+            var startTest = new StartTest(currentUser, questionsRepository, resultRepo, resultDiagnose);
             startTest.FormClosed += (s, args) => this.Show();
             startTest.Show();
             this.Hide();
@@ -39,6 +44,14 @@ namespace GeniusIdiotFormApp
         private void ExitButton_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void AddRemoveButton_Click(object sender, EventArgs e)
+        {
+            var addDeleteQuestions = new AddDeleteQuestions(questionsRepository, resultRepo, resultDiagnose);
+            addDeleteQuestions.FormClosed += (s, args) => this.Show();
+            addDeleteQuestions.Show();
+            this.Hide();
         }
 
         private static string? PromptName(string title, string message)

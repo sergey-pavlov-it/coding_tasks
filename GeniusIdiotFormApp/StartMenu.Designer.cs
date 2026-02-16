@@ -83,6 +83,7 @@
             AddRemoveButton.TabIndex = 3;
             AddRemoveButton.Text = "Удалить/Добавить вопрос";
             AddRemoveButton.UseVisualStyleBackColor = false;
+            AddRemoveButton.Click += AddRemoveButton_Click;
             // 
             // ExitButton
             // 

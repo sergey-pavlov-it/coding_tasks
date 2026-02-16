@@ -8,20 +8,22 @@ namespace GeniusIdiotFormApp
 {
     public partial class StartTest : Form
     {
-        QuizEngine startTest = new QuizEngine(); // для старта теста
-        QuestionsRepository questionsRepository = new QuestionsRepository(); // для оперирования репозиторием вопросов
-        UserResultRepository resultRepo = new UserResultRepository(); // для оперирования сохранением/чтением результатов
-        DiagnoseCalculator resultDiagnose = new DiagnoseCalculator(); // для получения диагноза
-
+        private readonly QuestionsRepository _questionsRepo;
+        private readonly UserResultRepository _userResultRepo;
+        private readonly DiagnoseCalculator _diagnoseCalculator;
         private int _currentIndex = 0;
         private List<Question> _questions = new List<Question>();
         private int _correctAnswers = 0;
         private readonly string _userName;
 
-        public StartTest(User userName)
+        public StartTest(User userName, QuestionsRepository questionsRepo, UserResultRepository userResultRepo, DiagnoseCalculator diagnoseResult)
         {
             InitializeComponent();
             _userName = userName.Name;
+            _questionsRepo = questionsRepo;
+            _userResultRepo = userResultRepo;
+            _diagnoseCalculator = diagnoseResult;
+
         }
 
         private void AnswerUserTextBox_TextChanged(object sender, EventArgs e)
@@ -33,7 +35,7 @@ namespace GeniusIdiotFormApp
         {
             _currentIndex = 0;
 
-            var arr = questionsRepository.Questions.ToArray();
+            var arr = _questionsRepo.Questions.ToArray();
             Random.Shared.Shuffle(arr);
             _questions = arr.ToList();
 
@@ -66,8 +68,6 @@ namespace GeniusIdiotFormApp
 
         private void ShowQuestion()
         {
-
-
             if (_questions.Count == 0)
             {
                 QuestionsLabel.Text = "В репозитории нет вопросов";
@@ -83,14 +83,13 @@ namespace GeniusIdiotFormApp
                 QuestionsLabel.Text = $"Вопрос №{_currentIndex + 1}";
                 TextQuestionsLable.Text = _questions[_currentIndex].Text;
             }
-
         }
 
         private void FinishQuiz()
         {
-            string userDiagnose = resultDiagnose.CalculateDiagnos(_correctAnswers, questionsRepository.Questions.Count);
+            string userDiagnose = _diagnoseCalculator.CalculateDiagnos(_correctAnswers, _questionsRepo.Questions.Count);
             MessageBox.Show($"Кол-во верных ответов: {_correctAnswers}\nВаш диагноз: {userDiagnose}");
-            resultRepo.SaveResult(_userName, _correctAnswers, userDiagnose);
+            _userResultRepo.SaveResult(_userName, _correctAnswers, userDiagnose);
             this.Close();
         }
     }

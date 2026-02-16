@@ -15,5 +15,9 @@ namespace GeniusIdiotConsoleApp.Domain
             Text = text;
             Answer = answer;
         }
+
+        public override string ToString() => $"{Text} (Ответ: {Answer})";
     }
+
+
 }
