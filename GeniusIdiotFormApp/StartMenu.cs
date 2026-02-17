@@ -20,7 +20,7 @@ namespace GeniusIdiotFormApp
         QuizEngine startTest = new QuizEngine(); // для старта теста
         QuestionsRepository questionsRepository = new QuestionsRepository(); // для оперирования репозиторием вопросов
         UserResultRepository resultRepo = new UserResultRepository(); // для оперирования сохранением/чтением результатов
-        DiagnoseCalculator resultDiagnose = new DiagnoseCalculator(); // для получения диагноза
+        DiagnosisCalculator resultDiagnose = new DiagnosisCalculator(); // для получения диагноза
 
         public StartMenu()
         {

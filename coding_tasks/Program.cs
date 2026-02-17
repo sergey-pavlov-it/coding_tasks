@@ -2,9 +2,7 @@
 using GeniusIdiotConsoleApp.Application;
 using GeniusIdiotConsoleApp.Domain;
 using GeniusIdiotConsoleApp.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using GeniusIdiotClassLibrary.Validation;
 
 namespace GeniusIdiotConsoleApp
 {
@@ -13,9 +11,9 @@ namespace GeniusIdiotConsoleApp
         static void Main(string[] args)
         {
             QuestionsRepository questionsRepository = new QuestionsRepository(); // для оперирования репозиторием вопросов
-            QuizEngine startTest = new QuizEngine(); // для старта теста
+            QuizEngine quizEngine = new QuizEngine(); // для старта теста
             UserResultRepository resultRepo = new UserResultRepository(); // для оперирования сохранением/чтением результатов
-            DiagnoseCalculator resultDiagnose = new DiagnoseCalculator(); // для получения диагноза
+            DiagnosisCalculator diagnoseCalculator = new DiagnosisCalculator(); // для получения диагноза
 
             while (true)
             {
@@ -28,7 +26,7 @@ namespace GeniusIdiotConsoleApp
                 switch ((Console.ReadLine() ?? "").Trim())
                 {
                     case "1":
-                        RunQuizScenario(questionsRepository, startTest, resultRepo, resultDiagnose);
+                        RunQuizScenario(questionsRepository, quizEngine, resultRepo, diagnoseCalculator);
                         break;
                     case "2":
                         AddQuestionScenario(questionsRepository);
@@ -37,7 +35,7 @@ namespace GeniusIdiotConsoleApp
                         DeleteQuestionScenario(questionsRepository);
                         break;
                     case "4":
-                        ShowResultsScenario();
+                        ShowResultsScenario(resultRepo);
                         break;
                     case "0":
                         return;
@@ -47,7 +45,7 @@ namespace GeniusIdiotConsoleApp
                 }
             }
 
-            static void RunQuizScenario(QuestionsRepository questionsRepository, QuizEngine startTest, UserResultRepository resultRepo, DiagnoseCalculator resultDiagnose) 
+            static void RunQuizScenario(QuestionsRepository questionsRepository, QuizEngine quizEngine, UserResultRepository resultRepo, DiagnosisCalculator diagnoseCalculator) 
             {
                 Console.WriteLine("Здравствуйте! Как к Вам обращаться?"); // знакомство
                 User currentUser = new User((Console.ReadLine() ?? "").Trim());
@@ -56,15 +54,15 @@ namespace GeniusIdiotConsoleApp
                 bool doTest = true;
                 while (doTest)
                 {
-                    int correctAnswers = startTest.Run(questionsRepository.Questions); // запуск теста
+                    int correctAnswers = quizEngine.Run(questionsRepository.Questions); // запуск теста
 
                     Console.WriteLine($"Количество верных ответов: {correctAnswers}"); // итог теста
 
-                    string userDiagnos = resultDiagnose.CalculateDiagnos(correctAnswers, questionsRepository.Questions.Count);
+                    string userDiagnosis = diagnoseCalculator.CalculateDiagnos(correctAnswers, questionsRepository.Questions.Count);
 
-                    Console.WriteLine($"{currentUser.Name}, Ваш диагноз - {userDiagnos}");
+                    Console.WriteLine($"{currentUser.Name}, Ваш диагноз - {userDiagnosis}");
 
-                    resultRepo.SaveResult(currentUser.Name, correctAnswers, userDiagnos); // сохранили результат
+                    resultRepo.SaveResult(currentUser.Name, correctAnswers, userDiagnosis); // сохранили результат
 
                     Console.WriteLine("Хотите пройти тест ещё раз? (Да/Нет)"); // повтор теста
                     while (true)
@@ -97,6 +95,8 @@ namespace GeniusIdiotConsoleApp
                 Console.WriteLine("Введите ответ:");
                 string? answer = Console.ReadLine();
 
+
+
                 bool ok = questionsRepository.AddQuestion(question, answer, out string error);
 
                 if (!ok)
@@ -117,8 +117,20 @@ namespace GeniusIdiotConsoleApp
                 {
                     Console.WriteLine($"{i}. {questionsRepository.Questions[i - 1].Text}");
                 }
+
                 Console.WriteLine("Введите номер удаляемого вопроса");
-                string indexDelete = (Console.ReadLine() ?? "").Trim();
+                int indexDelete;
+                while (true)
+                {
+                    if (InputValidation.TryParseIndex(Console.ReadLine(), out indexDelete))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Введите число больше нуля");
+                    }
+                }
                 bool ok = questionsRepository.DeleteQuestion(indexDelete, out string error);
                 if (!ok)
                 {
@@ -131,9 +143,8 @@ namespace GeniusIdiotConsoleApp
                 }
             }
 
-            static void ShowResultsScenario()
+            static void ShowResultsScenario(UserResultRepository resultRepo)
             {
-                UserResultRepository resultRepo = new UserResultRepository();
                 resultRepo.ShowResult();
             }
         }

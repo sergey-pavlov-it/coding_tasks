@@ -14,9 +14,9 @@ namespace GeniusIdiotFormApp
     {
         private readonly QuestionsRepository _questionsRepo;
         private readonly UserResultRepository _userResultRepo;
-        private readonly DiagnoseCalculator _diagnoseCalculator;
+        private readonly DiagnosisCalculator _diagnoseCalculator;
 
-        public AddDeleteQuestions(QuestionsRepository questionsRepo, UserResultRepository userResultRepo, DiagnoseCalculator diagnoseResult)
+        public AddDeleteQuestions(QuestionsRepository questionsRepo, UserResultRepository userResultRepo, DiagnosisCalculator diagnoseResult)
         {
             InitializeComponent();
             _questionsRepo = questionsRepo;

@@ -42,45 +42,24 @@ namespace GeniusIdiotConsoleApp.Infrastructure
             }
         }
 
-        public bool AddQuestion(string text, string answerText, out string error)
+        public bool AddQuestion(string text, int answer)
         {
-            error = "";
-
-            text = (text ?? "").Trim();
-            if (string.IsNullOrWhiteSpace(text) || text.Contains(';') || text.Contains('\n') || text.Contains('\r'))
-            {
-                error = "Некорректный текст вопроса (пусто, символ ;, перенос строки).";
-                return false;
-            }
-
-            if (!int.TryParse((answerText ?? "").Trim(), out int answer))
-            {
-                error = "Ответ должен быть числом.";
-                return false;
-            }
-
             Questions.Add(new Question(text, answer));
             _fileService.AppendLine(_path, $"{text};{answer}");
             return true;
         }
 
-        public bool DeleteQuestion(string indexDelete, out string error)
+        public bool DeleteQuestion(int indexDelete, out string error)
         {
             error = "";
 
-            if (!int.TryParse(indexDelete, out int index))
+            if (indexDelete < 1 || indexDelete > Questions.Count)
             {
-                error = "Введите число";
+                error = "Вопроса с таким номером не существует";
                 return false;
             }
 
-            if (index < 1 || index > Questions.Count)
-            {
-                error = "Строки с таким номером не существует";
-                return false;
-            }
-
-            Questions.RemoveAt(index - 1);
+            Questions.RemoveAt(indexDelete - 1);
 
             List<string> lines = new List<string>();
             foreach (Question question in Questions)

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace GeniusIdiotClassLibrary
 {
-    public class DiagnoseCalculator
+    public class DiagnosisCalculator
     {
         public string CalculateDiagnos(int correctAnswers, int totalQuestions)
         {

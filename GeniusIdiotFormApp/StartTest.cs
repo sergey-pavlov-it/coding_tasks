@@ -10,13 +10,13 @@ namespace GeniusIdiotFormApp
     {
         private readonly QuestionsRepository _questionsRepo;
         private readonly UserResultRepository _userResultRepo;
-        private readonly DiagnoseCalculator _diagnoseCalculator;
+        private readonly DiagnosisCalculator _diagnoseCalculator;
         private int _currentIndex = 0;
         private List<Question> _questions = new List<Question>();
         private int _correctAnswers = 0;
         private readonly string _userName;
 
-        public StartTest(User userName, QuestionsRepository questionsRepo, UserResultRepository userResultRepo, DiagnoseCalculator diagnoseResult)
+        public StartTest(User userName, QuestionsRepository questionsRepo, UserResultRepository userResultRepo, DiagnosisCalculator diagnoseResult)
         {
             InitializeComponent();
             _userName = userName.Name;
