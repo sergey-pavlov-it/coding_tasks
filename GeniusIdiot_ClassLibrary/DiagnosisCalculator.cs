@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace GeniusIdiotClassLibrary
+﻿namespace GeniusIdiotConsoleApp.Application
 {
     public class DiagnosisCalculator
     {
-        public string CalculateDiagnos(int correctAnswers, int totalQuestions)
+        public string CalculateDiagnosis(int correctAnswers, int totalQuestions)
         {
-            var indexDiagnos = GetIndexDiagnos(correctAnswers, totalQuestions);
-            return GetDiagnos(indexDiagnos);
+            var indexDiagnos = GetDiagnosisIndex(correctAnswers, totalQuestions);
+            return GetDiagnosis(indexDiagnos);
         }
                     
-        public string GetDiagnos(int diagnosisIndex)
+        public string GetDiagnosis(int diagnosisIndex)
         {
             string[] diagnosis = new string[6]
             {
@@ -26,7 +22,7 @@ namespace GeniusIdiotClassLibrary
             return diagnosis[diagnosisIndex];
         }
 
-        public int GetIndexDiagnos(int correctAnswers, int totalQuestions)
+        public int GetDiagnosisIndex(int correctAnswers, int totalQuestions)
         {
             int result = (int)Math.Floor(correctAnswers * 5.0 / totalQuestions);
             return result;

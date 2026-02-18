@@ -1,4 +1,4 @@
-﻿using GeniusIdiotClassLibrary;
+﻿using GeniusIdiotConsoleApp;
 using GeniusIdiotConsoleApp.Infrastructure;
 using System;
 using System.Collections.Generic;

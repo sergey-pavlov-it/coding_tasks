@@ -42,11 +42,10 @@ namespace GeniusIdiotConsoleApp.Infrastructure
             }
         }
 
-        public bool AddQuestion(string text, int answer)
+        public void AddQuestion(string text, int answer)
         {
             Questions.Add(new Question(text, answer));
             _fileService.AppendLine(_path, $"{text};{answer}");
-            return true;
         }
 
         public bool DeleteQuestion(int indexDelete, out string error)

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GeniusIdiotClassLibrary.Validation
+namespace GeniusIdiotConsoleApp.Validation
 {
     public static class InputValidation
     {

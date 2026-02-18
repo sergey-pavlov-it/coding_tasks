@@ -1,4 +1,4 @@
-﻿using GeniusIdiotClassLibrary;
+﻿using GeniusIdiotConsoleApp;
 using GeniusIdiotConsoleApp.Application;
 using GeniusIdiotConsoleApp.Domain;
 using GeniusIdiotConsoleApp.Infrastructure;
@@ -87,7 +87,7 @@ namespace GeniusIdiotFormApp
 
         private void FinishQuiz()
         {
-            string userDiagnose = _diagnoseCalculator.CalculateDiagnos(_correctAnswers, _questionsRepo.Questions.Count);
+            string userDiagnose = _diagnoseCalculator.CalculateDiagnosis(_correctAnswers, _questionsRepo.Questions.Count);
             MessageBox.Show($"Кол-во верных ответов: {_correctAnswers}\nВаш диагноз: {userDiagnose}");
             _userResultRepo.SaveResult(_userName, _correctAnswers, userDiagnose);
             this.Close();
